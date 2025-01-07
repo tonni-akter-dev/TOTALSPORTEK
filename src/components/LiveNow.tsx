@@ -38,7 +38,7 @@ const streamCards: StreamCard[] = [
 
 const LiveNow = () => {
   return (
-    <section className="w-full py-12 space-y-8">
+    <section className="w-full pt-24 pb-12 space-y-8">
       {/* Hero Banner */}
       <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
         <img
