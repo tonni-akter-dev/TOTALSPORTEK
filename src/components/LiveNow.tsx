@@ -14,25 +14,25 @@ const streamCards: StreamCard[] = [
     category: "Speedrunning",
     title: "Late Night Speedruns",
     streamer: "SpeedRunner",
-    image: "/lovable-uploads/4ee33159-1aa4-4689-99e2-7507f4cb893f.png"
+    image: "https://images.unsplash.com/photo-1493962853295-0fd70327578a"
   },
   {
     category: "Just Chatting",
     title: "Casual Friday Stream",
     streamer: "GameMaster",
-    image: "/photo-1605810230434-7631ac76ec81"
+    image: "https://images.unsplash.com/photo-1485833077593-4278bba3f11f"
   },
   {
     category: "Competitive",
     title: "Ranked Matches",
     streamer: "ProGamer",
-    image: "/photo-1487058792275-0ad4aaf24ca7"
+    image: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937"
   },
   {
     category: "Community",
     title: "Community Game Night",
     streamer: "CommunityFirst",
-    image: "/photo-1486312338219-ce68d2c6f44d"
+    image: "https://images.unsplash.com/photo-1501286353178-1ec881214838"
   }
 ];
 
