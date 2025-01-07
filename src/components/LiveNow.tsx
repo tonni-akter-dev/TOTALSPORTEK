@@ -11,28 +11,28 @@ interface StreamCard {
 
 const streamCards: StreamCard[] = [
   {
-    category: "Speedrunning",
-    title: "Late Night Speedruns",
-    streamer: "SpeedRunner",
-    image: "https://images.unsplash.com/photo-1493962853295-0fd70327578a"
+    category: "Football",
+    title: "Premier League Live",
+    streamer: "SportsCenter",
+    image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?ixlib=rb-4.0.3"
   },
   {
-    category: "Just Chatting",
-    title: "Casual Friday Stream",
-    streamer: "GameMaster",
-    image: "https://images.unsplash.com/photo-1485833077593-4278bba3f11f"
+    category: "F1 Racing",
+    title: "Monaco Grand Prix",
+    streamer: "F1Official",
+    image: "https://images.unsplash.com/photo-1504707748692-419802cf939d?ixlib=rb-4.0.3"
   },
   {
-    category: "Competitive",
-    title: "Ranked Matches",
-    streamer: "ProGamer",
-    image: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937"
+    category: "NBA",
+    title: "Lakers vs Warriors",
+    streamer: "NBASports",
+    image: "https://images.unsplash.com/photo-1504450758481-7338eba7524a?ixlib=rb-4.0.3"
   },
   {
-    category: "Community",
-    title: "Community Game Night",
-    streamer: "CommunityFirst",
-    image: "https://images.unsplash.com/photo-1501286353178-1ec881214838"
+    category: "UFC",
+    title: "Championship Fight Night",
+    streamer: "UFCOfficial",
+    image: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?ixlib=rb-4.0.3"
   }
 ];
 
