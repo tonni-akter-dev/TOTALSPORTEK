@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, ArrowLeft, Users } from "lucide-react";
+import { Heart, ArrowLeft, Users, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface RecommendedStream {
   id: string;
@@ -12,10 +13,34 @@ interface RecommendedStream {
   category: string;
 }
 
+interface AlternativeLink {
+  platform: string;
+  url: string;
+  quality: string;
+}
+
 const StreamDetails = () => {
   const { streamId } = useParams();
   const [likes, setLikes] = useState(1234);
   const [hasLiked, setHasLiked] = useState(false);
+
+  const alternativeLinks: AlternativeLink[] = [
+    {
+      platform: "Stream Link 1",
+      url: "#",
+      quality: "1080p"
+    },
+    {
+      platform: "Stream Link 2",
+      url: "#",
+      quality: "720p"
+    },
+    {
+      platform: "Stream Link 3",
+      url: "#",
+      quality: "480p"
+    }
+  ];
 
   const recommendedStreams: RecommendedStream[] = [
     {
@@ -72,6 +97,33 @@ const StreamDetails = () => {
       <div className="relative aspect-video bg-black rounded-lg mb-8">
         <div className="absolute inset-0 flex items-center justify-center text-white">
           <p>Stream Player</p>
+        </div>
+      </div>
+
+      {/* Alternative Links Section */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4">Alternative Links</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {alternativeLinks.map((link, index) => (
+            <Card key={index} className="hover:shadow-md transition-shadow">
+              <CardHeader className="p-4">
+                <CardTitle className="text-lg flex items-center justify-between">
+                  {link.platform}
+                  <span className="text-sm font-normal text-muted-foreground">
+                    {link.quality}
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <Button variant="outline" className="w-full" asChild>
+                  <a href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
+                    Watch Here
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
 
