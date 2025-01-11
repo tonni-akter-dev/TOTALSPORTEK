@@ -2,30 +2,18 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-// Define valid table names as a type
-type TableName = "leagues" | "teams" | "events" | "channels" | "profiles" | "stream_links";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import EventForm from "@/components/forms/EventForm";
+import TeamForm from "@/components/forms/TeamForm";
+import LeagueForm from "@/components/forms/LeagueForm";
+import ChannelForm from "@/components/forms/ChannelForm";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
-    events: 0,
-    teams: 0,
-    leagues: 0,
-    channels: 0,
-  });
 
   useEffect(() => {
     checkUser();
-    fetchStats();
   }, []);
 
   const checkUser = async () => {
@@ -35,24 +23,6 @@ const Dashboard = () => {
     } else {
       setLoading(false);
     }
-  };
-
-  const fetchStats = async () => {
-    const fetchCount = async (table: TableName) => {
-      const { count } = await supabase
-        .from(table)
-        .select("*", { count: "exact", head: true });
-      return count || 0;
-    };
-
-    const [events, teams, leagues, channels] = await Promise.all([
-      fetchCount("events"),
-      fetchCount("teams"),
-      fetchCount("leagues"),
-      fetchCount("channels"),
-    ]);
-
-    setStats({ events, teams, leagues, channels });
   };
 
   const handleLogout = async () => {
@@ -78,29 +48,29 @@ const Dashboard = () => {
       </nav>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatsCard title="Total Events" value={stats.events} />
-            <StatsCard title="Total Teams" value={stats.teams} />
-            <StatsCard title="Total Leagues" value={stats.leagues} />
-            <StatsCard title="Total Channels" value={stats.channels} />
-          </div>
-        </div>
+        <Tabs defaultValue="events" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="events">Events</TabsTrigger>
+            <TabsTrigger value="teams">Teams</TabsTrigger>
+            <TabsTrigger value="leagues">Leagues</TabsTrigger>
+            <TabsTrigger value="channels">Channels</TabsTrigger>
+          </TabsList>
+          <TabsContent value="events">
+            <EventForm />
+          </TabsContent>
+          <TabsContent value="teams">
+            <TeamForm />
+          </TabsContent>
+          <TabsContent value="leagues">
+            <LeagueForm />
+          </TabsContent>
+          <TabsContent value="channels">
+            <ChannelForm />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
 };
-
-const StatsCard = ({ title, value }: { title: string; value: number }) => (
-  <Card>
-    <CardHeader>
-      <CardTitle className="text-xl">{title}</CardTitle>
-      <CardDescription>Total count</CardDescription>
-    </CardHeader>
-    <CardContent>
-      <p className="text-3xl font-bold">{value}</p>
-    </CardContent>
-  </Card>
-);
 
 export default Dashboard;
