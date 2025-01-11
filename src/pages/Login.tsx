@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AuthError, AuthApiError } from "@supabase/supabase-js";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -22,6 +23,20 @@ const Login = () => {
     checkUser();
   }, [navigate]);
 
+  const getErrorMessage = (error: AuthError) => {
+    if (error instanceof AuthApiError) {
+      switch (error.status) {
+        case 400:
+          return "Invalid email or password. Please check your credentials and try again.";
+        case 422:
+          return "Email format is invalid. Please enter a valid email address.";
+        default:
+          return error.message;
+      }
+    }
+    return error.message;
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -36,7 +51,7 @@ const Login = () => {
         navigate("/dashboard");
       }
     } catch (error: any) {
-      setError(error.message);
+      setError(getErrorMessage(error));
     }
   };
 
