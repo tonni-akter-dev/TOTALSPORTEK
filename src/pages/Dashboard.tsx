@@ -10,6 +10,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+// Define valid table names as a type
+type TableName = "leagues" | "teams" | "events" | "channels" | "profiles" | "stream_links";
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -35,7 +38,7 @@ const Dashboard = () => {
   };
 
   const fetchStats = async () => {
-    const fetchCount = async (table: string) => {
+    const fetchCount = async (table: TableName) => {
       const { count } = await supabase
         .from(table)
         .select("*", { count: "exact", head: true });
