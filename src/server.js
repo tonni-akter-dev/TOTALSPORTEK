@@ -9,6 +9,7 @@ import leagueRoutes from './routes/leagues.js';
 import bcrypt from 'bcryptjs';
 import { User } from './models/index.js';
 import dotenv from 'dotenv';
+import matchRoutes from './routes/matches.js';
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api', teamRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', leagueRoutes);
+app.use('/api', matchRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
