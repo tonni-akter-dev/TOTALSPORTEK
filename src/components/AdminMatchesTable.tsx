@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { API_BASE_URL } from '@/config/api';
-import { Pencil, Trash } from 'lucide-react';
+import { Pencil, Trash, Search } from 'lucide-react';
 import MatchFormDialog from './MatchFormDialog';
 
 interface Match {
@@ -60,7 +61,15 @@ const AdminMatchesTable = () => {
   const [matches, setMatches] = useState<Match[]>(demoMatches);
   const [loading, setLoading] = useState(false);
   const [editMatch, setEditMatch] = useState<Match | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
+
+  // Filter matches based on search query
+  const filteredMatches = matches.filter(match =>
+    match.match.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    match.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    match.submittedBy.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleDelete = async (id: string) => {
     try {
@@ -99,53 +108,68 @@ const AdminMatchesTable = () => {
   };
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Match</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Submitted By</TableHead>
-            <TableHead>Submitted At</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {matches.map((match) => (
-            <TableRow key={match._id}>
-              <TableCell className="font-medium">{match.match}</TableCell>
-              <TableCell>{match.description}</TableCell>
-              <TableCell>{match.submittedBy}</TableCell>
-              <TableCell>{new Date(match.submittedAt).toLocaleDateString()}</TableCell>
-              <TableCell>
-                <span className={`px-2 py-1 rounded-full text-xs font-semibold
-                  ${match.status === 'approved' ? 'bg-green-100 text-green-800' : 
-                    match.status === 'rejected' ? 'bg-red-100 text-red-800' : 
-                    'bg-yellow-100 text-yellow-800'}`}>
-                  {match.status.charAt(0).toUpperCase() + match.status.slice(1)}
-                </span>
-              </TableCell>
-              <TableCell className="space-x-2">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => handleEdit(match)}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => handleDelete(match._id)}
-                >
-                  <Trash className="h-4 w-4 text-red-600" />
-                </Button>
-              </TableCell>
+    <div className="space-y-4">
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="Search matches..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
+      {/* Matches Table */}
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Match</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Submitted By</TableHead>
+              <TableHead>Submitted At</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredMatches.map((match) => (
+              <TableRow key={match._id}>
+                <TableCell className="font-medium">{match.match}</TableCell>
+                <TableCell>{match.description}</TableCell>
+                <TableCell>{match.submittedBy}</TableCell>
+                <TableCell>{new Date(match.submittedAt).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  <span className={`px-2 py-1 rounded-full text-xs font-semibold
+                    ${match.status === 'approved' ? 'bg-green-100 text-green-800' : 
+                      match.status === 'rejected' ? 'bg-red-100 text-red-800' : 
+                      'bg-yellow-100 text-yellow-800'}`}>
+                    {match.status.charAt(0).toUpperCase() + match.status.slice(1)}
+                  </span>
+                </TableCell>
+                <TableCell className="space-x-2">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleEdit(match)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleDelete(match._id)}
+                  >
+                    <Trash className="h-4 w-4 text-red-600" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
       {editMatch && (
         <MatchFormDialog
