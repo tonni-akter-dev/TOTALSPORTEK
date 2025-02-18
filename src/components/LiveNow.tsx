@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Play } from "lucide-react";
+import { Play, Users } from "lucide-react";
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from '@/config/api';
 
-interface StreamCard {
-  id: string;
-  category: string;
+interface Stream {
+  _id: string;
   title: string;
-  streamer: string;
-  image: string;
+  viewCount: number;
+  description: string;
+  streamUrl: string;
+  thumbnailUrl: string;
+  category: string;
+  isLive: boolean;
 }
 
 const streamCards: StreamCard[] = [
@@ -43,61 +47,102 @@ const streamCards: StreamCard[] = [
 ];
 
 const LiveNow = () => {
+  const [mostWatched, setMostWatched] = useState<Stream | null>(null);
+  const [liveStreams, setLiveStreams] = useState<Stream[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStreams = async () => {
+      try {
+        // Fetch most watched stream
+        const mostWatchedRes = await fetch(`${API_BASE_URL}/api/streams/most-watched`);
+        const mostWatchedData = await mostWatchedRes.json();
+        
+        // Fetch all live streams
+        const liveStreamsRes = await fetch(`${API_BASE_URL}/api/streams/live`);
+        const liveStreamsData = await liveStreamsRes.json();
+        
+        setMostWatched(mostWatchedData);
+        // Filter out the most watched stream from live streams to avoid duplication
+        setLiveStreams(liveStreamsData.filter(stream => stream._id !== mostWatchedData._id));
+      } catch (error) {
+        console.error('Error fetching streams:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStreams();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <section className="w-full pt-24 pb-12 space-y-8">
-      {/* Hero Banner */}
-      <Link to="/stream/featured" className="block">
-        <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
-          <img
-            src="/lovable-uploads/4ee33159-1aa4-4689-99e2-7507f4cb893f.png"
-            alt="World Championship Finals"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-          <div className="absolute bottom-0 left-0 p-8 text-white">
-            <div className="flex items-center gap-2 mb-2">
-              <Play className="w-4 h-4" />
-              <span className="text-sm">145,232 watching now</span>
+      {/* Most Watched Stream Hero Section */}
+      {mostWatched && (
+        <Link to={`/stream/${mostWatched._id}`} className="block">
+          <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
+            <img
+              src={mostWatched.thumbnailUrl}
+              alt={mostWatched.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+            <div className="absolute bottom-0 left-0 p-8 text-white">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="w-4 h-4" />
+                <span className="text-sm">{mostWatched.viewCount.toLocaleString()} watching now</span>
+              </div>
+              <h2 className="text-4xl font-bold mb-2">{mostWatched.title}</h2>
+              <p className="text-lg text-gray-200">Most Watched Stream</p>
+              <p className="text-sm text-gray-300 mt-2 max-w-2xl">
+                {mostWatched.description}
+              </p>
             </div>
-            <h2 className="text-4xl font-bold mb-2">World Championship Finals</h2>
-            <p className="text-lg text-gray-200">ESL Gaming</p>
-            <p className="text-sm text-gray-300 mt-2 max-w-2xl">
-              Watch the epic conclusion of this year's championship series with the world's
-              top teams competing for the grand prize.
-            </p>
           </div>
-        </div>
-      </Link>
+        </Link>
+      )}
 
       {/* Live Streams Grid */}
-      <div>
-        <h3 className="text-2xl font-bold mb-6">Live Now</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {streamCards.map((stream, index) => (
-            <Link key={stream.id} to={`/stream/${stream.id}`}>
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="relative aspect-video">
-                  <img
-                    src={stream.image}
-                    alt={stream.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
-                    LIVE
+      {liveStreams.length > 0 && (
+        <div>
+          <h3 className="text-2xl font-bold mb-6">Live Now</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {liveStreams.map((stream) => (
+              <Link key={stream._id} to={`/stream/${stream._id}`}>
+                <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="relative aspect-video">
+                    <img
+                      src={stream.thumbnailUrl}
+                      alt={stream.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+                      LIVE
+                    </div>
+                    <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
+                      <Users className="w-3 h-3" />
+                      {stream.viewCount.toLocaleString()}
+                    </div>
                   </div>
-                </div>
-                <CardHeader className="p-4">
-                  <CardTitle className="text-lg">{stream.title}</CardTitle>
-                  <CardDescription>{stream.streamer}</CardDescription>
-                </CardHeader>
-                <CardContent className="p-4 pt-0">
-                  <span className="text-sm text-muted-foreground">{stream.category}</span>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+                  <CardHeader className="p-4">
+                    <CardTitle className="text-lg">{stream.title}</CardTitle>
+                    <CardDescription>{stream.category}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0">
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {stream.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };
