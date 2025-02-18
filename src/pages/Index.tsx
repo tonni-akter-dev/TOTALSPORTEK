@@ -5,9 +5,24 @@ import LiveMatches from "@/components/LiveMatches";
 import LeaguesSidebar from "@/components/LeaguesSidebar";
 import TeamsSidebar from "@/components/TeamsSidebar";
 import Footer from "@/components/Footer";
+import { useEffect } from 'react';
+import { useTeamsLeagues } from '../context/TeamsLeaguesContext';
+import { fetchLeagues, fetchTeams } from "@/api/teamsLeagues";
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
+  const { teams, leagues, updateTeams, updateLeagues } = useTeamsLeagues();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const teamsData = await fetchTeams();
+      const leaguesData = await fetchLeagues();
+      updateTeams(teamsData);
+      updateLeagues(leaguesData);
+    };
+
+    fetchData();
+  }, [updateTeams, updateLeagues]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
