@@ -10,32 +10,35 @@ import StreamDetails from "./pages/StreamDetails";
 import Signup from "./pages/Signup";
 import UserDashboard from "./pages/UserDashboard";
 import { TeamsLeaguesProvider } from './context/TeamsLeaguesContext';
+import { EventsProvider } from '@/context/EventsContext';
 
 const App = () => (
-  <TeamsLeaguesProvider>
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <TooltipProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/user-dashboard" element={<UserDashboard />} />
-            <Route path="/stream/:streamId" element={<StreamDetails />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </BrowserRouter>
-        <Toaster />
-        <Sonner />
-      </TooltipProvider>
-    </ThemeProvider>
-  </TeamsLeaguesProvider>
+  <EventsProvider>
+    <TeamsLeaguesProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <TooltipProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/user-dashboard" element={<UserDashboard />} />
+              <Route path="/stream/:streamId" element={<StreamDetails />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </BrowserRouter>
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
+      </ThemeProvider>
+    </TeamsLeaguesProvider>
+  </EventsProvider>
 );
 
 export default App;
