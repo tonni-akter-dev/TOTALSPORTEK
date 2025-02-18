@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { API_BASE_URL, API_CONFIG } from "@/config/api";
 import { useTheme } from "next-themes";
 import { useToast } from "@/components/ui/use-toast";
+import { ArrowLeft } from "lucide-react";
 
 interface LoginError {
   status?: number;
@@ -90,11 +91,17 @@ const Login = () => {
   };
 
   return (
-    <div
-      className={`min-h-screen flex items-center justify-center ${
-        theme === "light" ? "bg-gray-50" : "bg-[#1a1a1a]"
-      } p-4`}
-    >
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="absolute top-4 left-4">
+        <Button
+          variant="ghost"
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Go Home
+        </Button>
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-2">
           <CardTitle

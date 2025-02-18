@@ -37,5 +37,15 @@ export const useAuth = () => {
     checkAuth();
   }, []);
 
-  return { isAuthenticated, loading, user };
-}; 
+  const logout = () => {
+    // Clear authentication token
+    localStorage.removeItem('token');
+    // Clear user email
+    localStorage.removeItem('userEmail');
+    // Reset any other authentication-related state
+  };
+
+  return { isAuthenticated, loading, user, logout };
+};
+
+export default useAuth; 

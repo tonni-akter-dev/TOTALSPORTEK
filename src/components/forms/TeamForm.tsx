@@ -106,8 +106,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { useTeamsLeagues } from '@/context/TeamsLeaguesContext';
+import { fetchTeams } from "@/api/teamsLeagues";
 
 type TeamFormData = {
   name: string;
@@ -130,6 +131,8 @@ const TeamForm = () => {
   const form = useForm<TeamFormData>();
   const [titleCount, setTitleCount] = useState(0);
   const [descriptionCount, setDescriptionCount] = useState(0);
+  const { updateTeams } = useTeamsLeagues();
+
   const onSubmit = async (data: TeamFormData) => {
     setLoading(true);
     try {
@@ -149,6 +152,10 @@ const TeamForm = () => {
         description: "Team created successfully",
       });
       form.reset();
+
+      // After successful update
+      const updatedTeams = await fetchTeams(); // Implement this function
+      updateTeams(updatedTeams);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -240,7 +247,10 @@ const TeamForm = () => {
                 <FormItem>
                   <FormLabel>Team Image (49x49)</FormLabel>
                   <FormControl>
-                    <Input {...field} type="file" />
+                    <Input
+                      type="file"
+                      onChange={(e) => field.onChange(e.target.files?.[0] || null)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -305,46 +315,31 @@ const TeamForm = () => {
             />
 
             {/* Page Title */}
-            {/* <FormField
+            <FormField
               control={form.control}
               name="page_title"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Page Title</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Page Title" />
+                    <Input
+                      {...field}
+                      placeholder="Page Title"
+                      maxLength={60}
+                      onChange={(e) => {
+                        setTitleCount(e.target.value.length);
+                        field.onChange(e);
+                      }}
+                    />
                   </FormControl>
+                  <p className="text-sm text-gray-500">{titleCount}/60</p>
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
 
-
-<FormField
-            control={form.control}
-            name="page_title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Page Title</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="Page Title"
-                    maxLength={60}
-                    onChange={(e) => {
-                      setTitleCount(e.target.value.length);
-                      field.onChange(e);
-                    }}
-                  />
-                </FormControl>
-                <p className="text-sm text-gray-500">{titleCount}/60</p>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
             {/* Meta Description */}
-            {/* <FormField
+            <FormField
               control={form.control}
               name="meta_description"
               render={({ field }) => (
@@ -354,38 +349,18 @@ const TeamForm = () => {
                     <textarea
                       {...field}
                       placeholder="Meta Description"
-                      className="w-full h-20 p-2 border border-gray-300 rounded"
+                      className="w-full h-20 p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300"
+                      onChange={(e) => {
+                        setDescriptionCount(e.target.value.length);
+                        field.onChange(e);
+                      }}
                     ></textarea>
                   </FormControl>
+                  <p className="text-sm text-gray-500">{descriptionCount}/160</p>
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
-
-
-
-<FormField
-            control={form.control}
-            name="meta_description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Meta Description</FormLabel>
-                <FormControl>
-                  <textarea
-                    {...field}
-                    placeholder="Meta Description"
-                    className="w-full h-20 p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300"
-                    onChange={(e) => {
-                      setDescriptionCount(e.target.value.length);
-                      field.onChange(e);
-                    }}
-                  ></textarea>
-                </FormControl>
-                <p className="text-sm text-gray-500">{descriptionCount}/160</p>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            />
 
             {/* Meta Keywords */}
             <FormField
