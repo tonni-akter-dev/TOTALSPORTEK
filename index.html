@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TotalSportek - Live Sports Streaming</title>
-    <meta name="description" content="Watch live sports streams including football, NBA, NHL, NFL and more" />
+    <meta
+      name="description"
+      content="Watch live sports streams including football, NBA, NHL, NFL and more"
+    />
     <meta name="author" content="TotalSportek" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
   </head>
@@ -13,4 +16,20 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
+  <!-- <script>
+      // 🔹 Disable Right Click
+      document.addEventListener("contextmenu", (event) => event.preventDefault());
+
+      // 🔹 Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U (View Source)
+      document.addEventListener("keydown", (event) => {
+          if (
+              event.key === "F12" || 
+              (event.ctrlKey && event.shiftKey && event.key === "I") || 
+              (event.ctrlKey && event.shiftKey && event.key === "J") || 
+              (event.ctrlKey && event.key === "U")
+          ) {
+              event.preventDefault();
+          }
+      });
+  </script> -->
 </html>

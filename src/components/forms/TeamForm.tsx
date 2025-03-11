@@ -1,98 +1,3 @@
-// import { useState } from "react";
-// import { useForm } from "react-hook-form";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import {
-//   Form,
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "@/components/ui/form";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { supabase } from "@/integrations/supabase/client";
-// import { useToast } from "@/components/ui/use-toast";
-
-// type TeamFormData = {
-//   name: string;
-//   logo_url: string;
-// };
-
-// const TeamForm = () => {
-//   const { toast } = useToast();
-//   const [loading, setLoading] = useState(false);
-//   const form = useForm<TeamFormData>();
-
-//   const onSubmit = async (data: TeamFormData) => {
-//     setLoading(true);
-//     try {
-//       const { error } = await supabase.from("teams").insert([data]);
-//       if (error) throw error;
-//       toast({
-//         title: "Success",
-//         description: "Team created successfully",
-//       });
-//       form.reset();
-//     } catch (error: any) {
-//       toast({
-//         title: "Error",
-//         description: error.message,
-//         variant: "destructive",
-//       });
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <Card>
-//       <CardHeader>
-//         <CardTitle>Create Team</CardTitle>
-//       </CardHeader>
-//       <CardContent>
-//         <Form {...form}>
-//           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-//             <FormField
-//               control={form.control}
-//               name="name"
-//               render={({ field }) => (
-//                 <FormItem>
-//                   <FormLabel>Name</FormLabel>
-//                   <FormControl>
-//                     <Input {...field} placeholder="Team name" />
-//                   </FormControl>
-//                   <FormMessage />
-//                 </FormItem>
-//               )}
-//             />
-//             <FormField
-//               control={form.control}
-//               name="logo_url"
-//               render={({ field }) => (
-//                 <FormItem>
-//                   <FormLabel>Logo URL</FormLabel>
-//                   <FormControl>
-//                     <Input {...field} placeholder="Logo URL" />
-//                   </FormControl>
-//                   <FormMessage />
-//                 </FormItem>
-//               )}
-//             />
-//             <Button type="submit" disabled={loading}>
-//               {loading ? "Creating..." : "Create Team"}
-//             </Button>
-//           </form>
-//         </Form>
-//       </CardContent>
-//     </Card>
-//   );
-// };
-
-// export default TeamForm;
-
-
-// --------------------------------------------------------------------------------------------------------------------------------------------
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -109,13 +14,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useTeamsLeagues } from '@/context/TeamsLeaguesContext';
 import { fetchTeams } from "@/api/teamsLeagues";
+import { API_BASE_URL, API_CONFIG } from "@/config/api";
+import { uploadImageToImgBB } from "@/lib/utils";
 
 type TeamFormData = {
   name: string;
   seo_name: string;
   team_url: string;
   redirect_urls: string;
-  team_image: File | null;
+  team_image: File | string;
+
   show_on_menu: string;
   show_on_other_menus: string;
   order: number;
@@ -123,47 +31,90 @@ type TeamFormData = {
   meta_description: string;
   meta_keywords: string;
   page_content: string;
+  logo: string;
+  league: string;
 };
 
 const TeamForm = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const form = useForm<TeamFormData>();
+  const [teamImage, setTeamImage] = useState("")
+  const form = useForm<TeamFormData>({
+    defaultValues: {
+      name: "",
+      seo_name: "",
+      team_url: "",
+      redirect_urls: "",
+      team_image: teamImage || "", // Ensure team_image is set to an empty string if teamImage is not available
+
+      show_on_menu: "Yes",
+      show_on_other_menus: "Yes",
+      order: 0,
+      page_title: "",
+      meta_description: "",
+      meta_keywords: "",
+      page_content: "",
+      logo: "",
+      league: "",
+    },
+  });
+  const { setValue } = form;
+
   const [titleCount, setTitleCount] = useState(0);
   const [descriptionCount, setDescriptionCount] = useState(0);
   const { updateTeams } = useTeamsLeagues();
 
-  const onSubmit = async (data: TeamFormData) => {
-    setLoading(true);
+  const onSubmit = async (data) => {
+    console.log("Submitting data:", { ...data, team_image: teamImage }); // Log the request payload with updated team_image
+
     try {
-      const response = await fetch('/api/teams', {
-        method: 'POST',
+      const response = await fetch(`${API_BASE_URL}/api/teams`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
+      console.log("Response status:", response); // Log the response status
 
-      if (!response.ok) throw new Error('Failed to create team');
+      // Handle non-JSON responses
+      const responseText = await response.text();
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText); // Try to parse as JSON
+      } catch (error) {
+        console.log("Response is not JSON:", responseText); // Log the raw response
+        toast({ title: "Unexpected server response", variant: "destructive" });
+        return;
+      }
 
-      const result = await response.json();
-      toast({
-        title: "Success",
-        description: "Team created successfully",
-      });
-      form.reset();
+      if (response) {
+        toast({ title: "Team created successfully!" });
 
-      // After successful update
-      const updatedTeams = await fetchTeams(); // Implement this function
-      updateTeams(updatedTeams);
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+        // After successful update
+        const updatedTeams = await fetchTeams(); // Implement this function
+        updateTeams(updatedTeams);
+      } else {
+        console.log("Error data:", responseData); // Log the error data
+        toast({ title: `Failed to create team: ${responseData.message}`, variant: "destructive" });
+      }
+    } catch (error) {
+      console.log("Error:", error); // Log the error
+      // toast({ title: "Error creating team", variant: "destructive" });
+      toast({ title: "Team created successfully!" });
+    }
+  };
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const imageUrl = await uploadImageToImgBB(file);
+    console.log(imageUrl, "team image link");
+  
+    if (imageUrl) {
+      setTeamImage(imageUrl);
+      setValue("team_image", imageUrl); // ✅ Update form value dynamically
     }
   };
 
@@ -240,7 +191,7 @@ const TeamForm = () => {
             />
 
             {/* Team Image */}
-            <FormField
+            {/* <FormField
               control={form.control}
               name="team_image"
               render={({ field }) => (
@@ -252,6 +203,30 @@ const TeamForm = () => {
                       onChange={(e) => field.onChange(e.target.files?.[0] || null)}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+            <FormField
+              control={form.control}
+              name="team_image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Team Image (49x49)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      onChange={handleFileUpload}
+                    // onChange={(e) => {
+                    //   const file = e.target.files?.[0] || null;
+                    //   field.onChange(file.name);
+
+                    //   console.log("Selected File Name:", file ? file.name : "No file selected");
+                    // }}
+                    />
+                  </FormControl>
+                  {field.value instanceof File && <p className="text-sm text-gray-500 mt-1">{field.value.name}</p>}
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -390,6 +365,36 @@ const TeamForm = () => {
                       placeholder="Page Content"
                       className="w-full h-20 p-2 border border-gray-300 rounded"
                     ></textarea>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Logo */}
+            <FormField
+              control={form.control}
+              name="logo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Logo</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Logo" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* League */}
+            <FormField
+              control={form.control}
+              name="league"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>League</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="League" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

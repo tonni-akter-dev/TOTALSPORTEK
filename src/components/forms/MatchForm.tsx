@@ -23,17 +23,16 @@ const MatchForm = () => {
   const onSubmit = async (data: MatchFormData) => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/matches`, {
+      const response = await fetch(`${API_BASE_URL}/api/matches`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Include auth token from your auth system
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
+        credentials: "include",
         body: JSON.stringify({
           ...data,
           status: 'pending',
-          submittedBy: localStorage.getItem('userEmail') // Or get from your auth context
+          submittedBy: localStorage.getItem('userEmail')
         })
       });
 
@@ -45,7 +44,7 @@ const MatchForm = () => {
         title: "Success",
         description: "Match submitted for approval",
       });
-      
+
       form.reset();
     } catch (error) {
       toast({

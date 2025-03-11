@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { API_BASE_URL } from "@/config/api";
 
 // Extended Event Form Data
 type EventFormData = {
@@ -30,13 +31,13 @@ const EventForm = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [titleCount, setTitleCount] = useState(0);
-const [descriptionCount, setDescriptionCount] = useState(0);
+  const [descriptionCount, setDescriptionCount] = useState(0);
   const form = useForm<EventFormData>();
 
   const onSubmit = async (data: EventFormData) => {
     setLoading(true);
     try {
-      const response = await fetch('/api/events', {
+      const response = await fetch(`${API_BASE_URL}/api/events`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -163,22 +164,22 @@ const [descriptionCount, setDescriptionCount] = useState(0);
 
             {/* Redirect URLs */}
             <FormField
-  control={form.control}
-  name="redirectUrls"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Redirect URL(s)</FormLabel>
-      <FormControl>
-        <textarea
-          {...field}
-          placeholder="One URL per line. Don't put domain name."
-          className="w-full h-20 p-2 border rounded-md"
-        ></textarea>
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+              control={form.control}
+              name="redirectUrls"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Redirect URL(s)</FormLabel>
+                  <FormControl>
+                    <textarea
+                      {...field}
+                      placeholder="One URL per line. Don't put domain name."
+                      className="w-full h-20 p-2 border rounded-md"
+                    ></textarea>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* Start Date/Time */}
             <FormField
@@ -259,60 +260,60 @@ const [descriptionCount, setDescriptionCount] = useState(0);
               )}
             />
 
-      
 
-<FormField
-  control={form.control}
-  name="pageTitle"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Page Title</FormLabel>
-      <FormControl>
-        <Input
-          {...field}
-          placeholder="Page Title"
-          maxLength={60}
-          onChange={(e) => {
-            setTitleCount(e.target.value.length);
-            field.onChange(e);
-          }}
-        />
-      </FormControl>
-      <p className="text-sm text-gray-500">{titleCount}/60</p>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
 
-<FormField
-  control={form.control}
-  name="metaDescription"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Meta Description</FormLabel>
-      <FormControl>
-        <textarea
-          {...field}
-          placeholder="Meta Description"
-          maxLength={160}
-          className="w-full h-20 p-2 border rounded-md"
-          onChange={(e) => {
-            setDescriptionCount(e.target.value.length);
-            field.onChange(e);
-          }}
-        ></textarea>
-      </FormControl>
-      <p className="text-sm text-gray-500">{descriptionCount}/160</p>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+            <FormField
+              control={form.control}
+              name="pageTitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Page Title</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Page Title"
+                      maxLength={60}
+                      onChange={(e) => {
+                        setTitleCount(e.target.value.length);
+                        field.onChange(e);
+                      }}
+                    />
+                  </FormControl>
+                  <p className="text-sm text-gray-500">{titleCount}/60</p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="metaDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Meta Description</FormLabel>
+                  <FormControl>
+                    <textarea
+                      {...field}
+                      placeholder="Meta Description"
+                      maxLength={160}
+                      className="w-full h-20 p-2 border rounded-md"
+                      onChange={(e) => {
+                        setDescriptionCount(e.target.value.length);
+                        field.onChange(e);
+                      }}
+                    ></textarea>
+                  </FormControl>
+                  <p className="text-sm text-gray-500">{descriptionCount}/160</p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
 
             {/* Meta Keywords */}
             <FormField
               control={form.control}
-              name="metaKeywords" 
+              name="metaKeywords"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Meta Keywords</FormLabel>
@@ -339,7 +340,7 @@ const [descriptionCount, setDescriptionCount] = useState(0);
               )}
             />
 
-<Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading}>
               {loading ? "Creating..." : "Create Team"}
             </Button>
           </form>

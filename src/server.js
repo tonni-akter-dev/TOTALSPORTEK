@@ -10,29 +10,36 @@ import bcrypt from 'bcryptjs';
 import { User } from './models/index.js';
 import dotenv from 'dotenv';
 import matchRoutes from './routes/matches.js';
+import channelRoutes from './routes/channel.js';
+import eventRoutes from './routes/events.js'; // Import the new events route
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5002;
 
 // Middleware
-app.use(cors({
-  origin: ['http://localhost:8080', 'http://localhost:5173'], // Allow both ports
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
+
+const corsOptions = {
+  origin: "http://localhost:8080",
+  // origin: "http://135.181.63.71:8081",
+  credentials: true, // Allow cookies and authentication headers
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: "Content-Type,Authorization"
+};
+app.use(cors(corsOptions));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api', teamRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', leagueRoutes);
+app.use('/api', channelRoutes);
 app.use('/api', matchRoutes);
-
+app.use('/api', eventRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -58,7 +65,7 @@ const updateAdminCredentials = async () => {
     const hashedPassword = await bcrypt.hash("ukasha68122", 10);
     await User.findOneAndUpdate(
       { role: "admin" }, // Update any admin user
-      { 
+      {
         email: "ukashaatif123@gmail.com",
         password: hashedPassword
       }

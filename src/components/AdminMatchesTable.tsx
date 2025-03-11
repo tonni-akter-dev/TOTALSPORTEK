@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
-import { API_BASE_URL } from '@/config/api';
+import { API_BASE_URL, API_CONFIG } from '@/config/api';
 import { Pencil, Trash, Search } from 'lucide-react';
 import MatchFormDialog from './MatchFormDialog';
 
@@ -16,75 +16,62 @@ interface Match {
   submittedBy: string;
   submittedAt: string;
 }
-
-// Demo data that matches the MatchForm structure
-const demoMatches: Match[] = [
-  {
-    _id: '1',
-    match: 'Manchester United vs Arsenal',
-    link: 'https://stream1.example.com/mu-arsenal',
-    description: 'Premier League Match Day 15',
-    status: 'pending',
-    submittedBy: 'john.doe@example.com',
-    submittedAt: new Date().toISOString()
-  },
-  {
-    _id: '2',
-    match: 'Real Madrid vs Barcelona',
-    link: 'https://stream2.example.com/rm-barca',
-    description: 'El Clasico - La Liga',
-    status: 'approved',
-    submittedBy: 'jane.smith@example.com',
-    submittedAt: new Date(Date.now() - 86400000).toISOString() // 1 day ago
-  },
-  {
-    _id: '3',
-    match: 'Bayern Munich vs Dortmund',
-    link: 'https://stream3.example.com/bayern-bvb',
-    description: 'Bundesliga Der Klassiker',
-    status: 'rejected',
-    submittedBy: 'mike.wilson@example.com',
-    submittedAt: new Date(Date.now() - 172800000).toISOString() // 2 days ago
-  },
-  {
-    _id: '4',
-    match: 'Liverpool vs Manchester City',
-    link: 'https://stream4.example.com/liv-city',
-    description: 'Premier League Top 4 Battle',
-    status: 'pending',
-    submittedBy: 'sarah.jones@example.com',
-    submittedAt: new Date(Date.now() - 43200000).toISOString() // 12 hours ago
-  }
-];
-
 const AdminMatchesTable = () => {
-  const [matches, setMatches] = useState<Match[]>(demoMatches);
+  const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(false);
   const [editMatch, setEditMatch] = useState<Match | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
 
-  // Filter matches based on search query
-  const filteredMatches = matches.filter(match =>
-    match.match.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    match.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    match.submittedBy.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    getmatches();
+  }, []);
+
+
+  const getmatches = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/matches`, {
+        ...API_CONFIG,
+        credentials: 'include',
+        method: "GET",
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json(); 
+      setMatches(data); 
+      console.log(data, "matches");
+    } catch (error) {
+      console.error("Error fetching matches:", error);
+    }
+  };
 
   const handleDelete = async (id: string) => {
     try {
       setLoading(true);
-      // For demo purposes, delete locally
-      setMatches(matches.filter(match => match._id !== id));
-      
-      toast({
-        title: "Success",
-        description: "Match deleted successfully",
+      const response = await fetch(`${API_BASE_URL}/api/matches/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
       });
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Match deleted successfully",
+        });
+
+        getmatches();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete match');
+      }
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to delete match",
+        description: error.message || "Failed to delete match",
         variant: "destructive",
       });
     } finally {
@@ -96,16 +83,43 @@ const AdminMatchesTable = () => {
     setEditMatch(match);
   };
 
-  const handleSaveEdit = (updatedMatch: Match) => {
-    setMatches(matches.map(match => 
-      match._id === updatedMatch._id ? updatedMatch : match
-    ));
-    setEditMatch(null);
-    toast({
-      title: "Success",
-      description: "Match updated successfully",
-    });
+  const handleEditMatch = async (updatedMatch: Match) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/matches/${updatedMatch._id}`, {
+        ...API_CONFIG,
+        method: "PATCH",
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: updatedMatch.status }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error updating match: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setMatches(matches.map(match =>
+        match._id === data._id ? data : match
+      ));
+
+      setEditMatch(null);
+
+      toast({
+        title: "Success",
+        description: "Match updated successfully",
+      });
+    } catch (error) {
+      console.error("Error updating match:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update match",
+        variant: "destructive",
+      });
+    }
   };
+
 
   return (
     <div className="space-y-4">
@@ -135,7 +149,7 @@ const AdminMatchesTable = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredMatches.map((match) => (
+            {matches?.map((match) => (
               <TableRow key={match._id}>
                 <TableCell className="font-medium">{match.match}</TableCell>
                 <TableCell>{match.description}</TableCell>
@@ -143,9 +157,9 @@ const AdminMatchesTable = () => {
                 <TableCell>{new Date(match.submittedAt).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold
-                    ${match.status === 'approved' ? 'bg-green-100 text-green-800' : 
-                      match.status === 'rejected' ? 'bg-red-100 text-red-800' : 
-                      'bg-yellow-100 text-yellow-800'}`}>
+                    ${match.status === 'approved' ? 'bg-green-100 text-green-800' :
+                      match.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'}`}>
                     {match.status.charAt(0).toUpperCase() + match.status.slice(1)}
                   </span>
                 </TableCell>
@@ -174,7 +188,7 @@ const AdminMatchesTable = () => {
       {editMatch && (
         <MatchFormDialog
           match={editMatch}
-          onSave={handleSaveEdit}
+          onSave={handleEditMatch}
           onCancel={() => setEditMatch(null)}
         />
       )}

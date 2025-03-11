@@ -3,6 +3,14 @@ import { Team } from '../models/index.js';
 
 const router = express.Router();
 
+router.get('/teams', async (req, res) => {
+  try {
+    const teams = await Team.find().sort({ createdAt: -1 });
+    res.json(teams);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 // Create a new team
 router.post('/teams', async (req, res) => {
   try {
@@ -14,4 +22,7 @@ router.post('/teams', async (req, res) => {
   }
 });
 
-export default router; 
+export default router;
+
+
+

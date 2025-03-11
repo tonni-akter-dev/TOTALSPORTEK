@@ -6,7 +6,7 @@ import EventForm from "@/components/forms/EventForm";
 import TeamForm from "@/components/forms/TeamForm";
 import LeagueForm from "@/components/forms/LeagueForm";
 import ChannelForm from "@/components/forms/ChannelForm";
-import CategoryForm from "@/components/forms/categoryForm";
+import CategoryForm from "@/components/forms/categoryForm"; // Fixed case sensitivity
 import MatchForm from "@/components/forms/MatchForm";
 import { API_BASE_URL, API_CONFIG } from "@/config/api";
 import { useTheme } from "next-themes";
@@ -73,17 +73,35 @@ const Dashboard = () => {
   }
 
   return (
-    <div className={`min-h-screen ${theme === "light" ? "bg-gray-50" : "bg-[#1a1a1a]"}`}>
-      <nav className={`border-b ${theme === "light" ? "bg-white shadow-sm" : "bg-[#2a2a2a] border-[#3a3a3a]"}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div
+      className={`min-h-screen ${
+        theme === "light" ? "bg-gray-50" : "bg-[#1a1a1a]"
+      }`}
+    >
+      <nav
+        className={`border-b ${
+          theme === "light"
+            ? "bg-white shadow-sm"
+            : "bg-[#2a2a2a] border-[#3a3a3a]"
+        }`}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <h1 className={`text-xl font-bold ${theme === "light" ? "text-gray-900" : "text-white"}`}>
+            <h1
+              className={`text-xl font-bold ${
+                theme === "light" ? "text-gray-900" : "text-white"
+              }`}
+            >
               Admin Dashboard
             </h1>
             <Button
               onClick={handleLogout}
               variant="outline"
-              className={`${theme === "light" ? "bg-white text-gray-900 border-gray-300 hover:bg-gray-50" : "bg-[#2a2a2a] text-white border-[#3a3a3a] hover:bg-[#3a3a3a]"}`}
+              className={`${
+                theme === "light"
+                  ? "bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
+                  : "bg-[#2a2a2a] text-white border-[#3a3a3a] hover:bg-[#3a3a3a]"
+              }`}
             >
               Logout
             </Button>
@@ -91,68 +109,78 @@ const Dashboard = () => {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <Tabs defaultValue="matches" className="space-y-6">
-          <TabsList className={`grid w-full grid-cols-6 ${theme === "light" ? "bg-white shadow-sm" : "bg-[#2a2a2a] border-[#3a3a3a]"}`}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <Tabs defaultValue="matches" className="w-full">
+          <TabsList className="flex overflow-x-auto whitespace-nowrap p-1 mb-4 gap-1 sm:gap-2 border-b border-border/40">
             <TabsTrigger
               value="matches"
-              className={`${theme === "light" ? "data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900" : "data-[state=active]:bg-[#3a3a3a] data-[state=active]:text-white"}`}
+              className={`${
+                theme === "light"
+                  ? "data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900"
+                  : "data-[state=active]:bg-[#3a3a3a] data-[state=active]:text-white"
+              }`}
             >
               Matches
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="events"
-              className={`${theme === "light" ? "data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900" : "data-[state=active]:bg-[#3a3a3a] data-[state=active]:text-white"}`}
+              className="flex-shrink-0 px-3 py-1.5 text-sm"
             >
               Events
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="teams"
-              className={`${theme === "light" ? "data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900" : "data-[state=active]:bg-[#3a3a3a] data-[state=active]:text-white"}`}
+              className="flex-shrink-0 px-3 py-1.5 text-sm"
             >
               Teams
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="leagues"
-              className={`${theme === "light" ? "data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900" : "data-[state=active]:bg-[#3a3a3a] data-[state=active]:text-white"}`}
+              className="flex-shrink-0 px-3 py-1.5 text-sm"
             >
               Leagues
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="channels"
-              className={`${theme === "light" ? "data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900" : "data-[state=active]:bg-[#3a3a3a] data-[state=active]:text-white"}`}
+              className="flex-shrink-0 px-3 py-1.5 text-sm"
             >
               Channels
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="categories"
-              className={`${theme === "light" ? "data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900" : "data-[state=active]:bg-[#3a3a3a] data-[state=active]:text-white"}`}
+              className="flex-shrink-0 px-3 py-1.5 text-sm"
             >
               Categories
             </TabsTrigger>
           </TabsList>
-          <div className={`${theme === "light" ? "bg-white shadow-sm" : "bg-[#2a2a2a] border-[#3a3a3a]"} p-6 rounded-lg`}>
-            <TabsContent value="matches" className="mt-0">
+          <div
+            className={`${
+              theme === "light"
+                ? "bg-white shadow-sm"
+                : "bg-[#2a2a2a] border-[#3a3a3a]"
+            } p-6 rounded-lg`}
+          >
+            <TabsContent value="matches" className="mt-4">
               <AdminMatchesTable />
             </TabsContent>
-            <TabsContent value="events" className="mt-0">
+            <TabsContent value="events" className="mt-4">
               <EventForm />
             </TabsContent>
-            <TabsContent value="teams" className="mt-0">
+            <TabsContent value="teams" className="mt-4">
               <TeamForm />
             </TabsContent>
-            <TabsContent value="leagues" className="mt-0">
+            <TabsContent value="leagues" className="mt-4">
               <LeagueForm />
             </TabsContent>
-            <TabsContent value="channels" className="mt-0">
+            <TabsContent value="channels" className="mt-4">
               <ChannelForm />
             </TabsContent>
-            <TabsContent value="categories" className="mt-0">
+            <TabsContent value="categories" className="mt-4">
               <CategoryForm />
             </TabsContent>
           </div>
         </Tabs>
-      </main>
+      </div>
     </div>
   );
 };

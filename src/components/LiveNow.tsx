@@ -15,34 +15,78 @@ interface Stream {
   isLive: boolean;
 }
 
-const streamCards: StreamCard[] = [
+// const streamCards: StreamCard[] = [
+//   {
+//     id: "1",
+//     category: "Football",
+//     title: "Premier League Live",
+//     streamer: "SportsCenter",
+//     image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?ixlib=rb-4.0.3"
+//   },
+//   {
+//     id: "2",
+//     category: "F1 Racing",
+//     title: "Monaco Grand Prix",
+//     streamer: "F1Official",
+//     image: "https://images.unsplash.com/photo-1504707748692-419802cf939d?ixlib=rb-4.0.3"
+//   },
+//   {
+//     id: "3",
+//     category: "NBA",
+//     title: "Lakers vs Warriors",
+//     streamer: "NBASports",
+//     image: "https://images.unsplash.com/photo-1504450758481-7338eba7524a?ixlib=rb-4.0.3"
+//   },
+//   {
+//     id: "4",
+//     category: "UFC",
+//     title: "Championship Fight Night",
+//     streamer: "UFCOfficial",
+//     image: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?ixlib=rb-4.0.3"
+//   }
+// ];
+
+
+const streamCards: Stream[] = [
   {
-    id: "1",
+    _id: "1",
     category: "Football",
     title: "Premier League Live",
-    streamer: "SportsCenter",
-    image: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?ixlib=rb-4.0.3"
+    description: "Live coverage of the Premier League.",
+    viewCount: 5000,
+    streamUrl: "https://example.com/stream1",
+    thumbnailUrl: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?ixlib=rb-4.0.3",
+    isLive: true
   },
   {
-    id: "2",
+    _id: "2",
     category: "F1 Racing",
     title: "Monaco Grand Prix",
-    streamer: "F1Official",
-    image: "https://images.unsplash.com/photo-1504707748692-419802cf939d?ixlib=rb-4.0.3"
+    description: "Live stream of the Monaco Grand Prix.",
+    viewCount: 8000,
+    streamUrl: "https://example.com/stream2",
+    thumbnailUrl: "https://images.unsplash.com/photo-1504707748692-419802cf939d?ixlib=rb-4.0.3",
+    isLive: true
   },
   {
-    id: "3",
+    _id: "3",
     category: "NBA",
     title: "Lakers vs Warriors",
-    streamer: "NBASports",
-    image: "https://images.unsplash.com/photo-1504450758481-7338eba7524a?ixlib=rb-4.0.3"
+    description: "NBA showdown between the Lakers and Warriors.",
+    viewCount: 12000,
+    streamUrl: "https://example.com/stream3",
+    thumbnailUrl: "https://images.unsplash.com/photo-1504450758481-7338eba7524a?ixlib=rb-4.0.3",
+    isLive: true
   },
   {
-    id: "4",
+    _id: "4",
     category: "UFC",
     title: "Championship Fight Night",
-    streamer: "UFCOfficial",
-    image: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?ixlib=rb-4.0.3"
+    description: "UFC Championship Fight Night live.",
+    viewCount: 15000,
+    streamUrl: "https://example.com/stream4",
+    thumbnailUrl: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?ixlib=rb-4.0.3",
+    isLive: true
   }
 ];
 

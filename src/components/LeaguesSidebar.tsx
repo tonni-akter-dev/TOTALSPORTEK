@@ -1,34 +1,52 @@
-const LeaguesSidebar = () => {
-  const leagues = [
-    { name: "English Championship", icon: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
-    { name: "NHL", icon: "🏒" },
-    { name: "NFL", icon: "🏈" },
-    { name: "MMA", icon: "🥊" },
-    { name: "Ligue 1", icon: "🇫🇷" },
-    { name: "Bundesliga", icon: "🇩🇪" },
-    { name: "UEFA Europa League", icon: "🏆" },
-    { name: "UEFA Conference League", icon: "🏆" },
-    { name: "UEFA Champions League", icon: "⭐" },
-    { name: "Formula 1", icon: "🏎" },
-    { name: "Serie A", icon: "🇮🇹" },
-    { name: "La Liga", icon: "🇪🇸" },
-    { name: "Premier League", icon: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
-  ];
+const LeaguesSidebar = ({ leagues }) => {
 
+  console.log(leagues,"leagues");
+
+  
   return (
-    <aside className="w-64 border-r p-4 space-y-2">
-      <h2 className="font-semibold mb-4">Top Leagues</h2>
-      {leagues.map((league, idx) => (
-        <a
-          key={idx}
-          href="#"
-          className="flex items-center space-x-2 p-2 rounded-lg hover:bg-accent/50 transition-colors"
-        >
-          <span>{league.icon}</span>
-          <span className="text-sm">{league.name}</span>
-        </a>
-      ))}
-    </aside>
+    <div className="w-[250px] p-4">
+      <h2 className="text-lg font-semibold mb-4">Leagues</h2>
+      {/* Mobile scroll view */}
+      <div className="md:hidden overflow-y-auto max-h-[60vh] scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+        <div className="space-y-2">
+          {leagues
+            ?.sort((a, b) => a.order - b.order)
+            .map((league) => (
+              <div
+                key={league._id}
+                className="flex items-center p-2 rounded-lg hover:bg-accent cursor-pointer transition-colors"
+              >
+                <img
+                  src={league.image}
+                  alt={league.name}
+                  className="w-6 h-6 mr-3 rounded-full"
+                />
+                <span className="text-sm">{league.name}</span>
+              </div>
+            ))}
+
+        </div>
+      </div>
+
+      {/* Desktop view without scroll */}
+      <div className="hidden md:block">
+        <div className="space-y-2">
+          {leagues.map((league) => (
+            <div
+              key={league.name}
+              className="flex items-center p-2 rounded-lg hover:bg-accent cursor-pointer transition-colors"
+            >
+              <img
+                src={league.image}
+                alt={league.name}
+                className="w-6 h-6 mr-3 rounded-full"
+              />
+              <span className="text-sm">{league.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 

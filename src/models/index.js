@@ -1,7 +1,12 @@
-import mongoose from '../integrations/mongodb/client.js';
+
+import mongoose from 'mongoose';
 import { Team } from './Team.js';
 import { League } from './League.js';
 import bcrypt from 'bcryptjs';
+import connectDB from '../integrations/mongodb/client.js'; // Ensure MongoDB connection
+
+// Connect to MongoDB
+connectDB();
 
 // Event Schema
 const eventSchema = new mongoose.Schema({
@@ -22,7 +27,7 @@ const eventSchema = new mongoose.Schema({
   metaKeywords: String,
   pageContent: String,
   viewCount: { type: Number, default: 0 },
-  isLive: { type: Boolean, default: false }
+  isLive: { type: Boolean, default: false },
 });
 
 const Event = mongoose.model('Event', eventSchema);
@@ -34,7 +39,7 @@ const channelSchema = new mongoose.Schema({
   style: String,
   url: String,
   canonical: String,
-  redirect_urls: [String],
+  redirectUrls: [String], // Fixed inconsistency
   in_submenu: String,
   image: String,
   enabled: String,
@@ -53,7 +58,7 @@ const categorySchema = new mongoose.Schema({
   name: String,
   seo_name: String,
   category_url: String,
-  redirect_urls: [String],
+  redirectUrls: [String], // Fixed inconsistency
   category_image: String,
   show_on_menu: String,
   show_on_other_menus: String,
@@ -69,52 +74,44 @@ const Category = mongoose.model('Category', categorySchema);
 
 // User Schema
 const userSchema = new mongoose.Schema({
-  email: { 
-    type: String, 
-    required: true, 
+  email: {
+    type: String,
+    required: true,
     unique: true,
     lowercase: true,
     trim: true,
-    index: true
+    index: true,
   },
-  password: { 
-    type: String, 
-    required: true 
+  password: {
+    type: String,
+    required: true,
   },
-  role: { 
-    type: String, 
-    enum: ['user', 'admin'], 
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
     default: 'user',
-    index: true
+    index: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   lastLogin: {
     type: Date,
-    default: null
+    default: null,
   }
 }, {
   methods: {
-    comparePassword(candidatePassword) {
+    async comparePassword(candidatePassword) {
       return bcrypt.compare(candidatePassword, this.password);
     },
-    updateLastLogin() {
+    async updateLastLogin() {
       this.lastLogin = new Date();
       return this.save();
-    }
-  }
+    },
+  },
 });
 
 const User = mongoose.model('User', userSchema);
 
 export { Team, League, Event, Channel, Category, User };
-
-// module.exports = {
-//   Team,
-//   Event,
-//   League,
-//   Channel,
-//   Category,
-// }; 

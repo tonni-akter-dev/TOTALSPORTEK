@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { API_BASE_URL } from "@/config/api";
 
 type CategoryFormData = {
   name: string;
@@ -39,7 +40,7 @@ const CategoryForm = () => {
   const onSubmit = async (data: CategoryFormData) => {
     setLoading(true);
     try {
-      const response = await fetch('/api/categories', {
+      const response = await fetch(`${API_BASE_URL}/api/categories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +142,7 @@ const CategoryForm = () => {
             />
 
             {/* Category Image */}
-            <FormField
+            {/* <FormField
               control={form.control}
               name="category_image"
               render={({ field }) => (
@@ -149,6 +150,26 @@ const CategoryForm = () => {
                   <FormLabel>Category Image (49x49)</FormLabel>
                   <FormControl>
                     <Input {...field} type="file" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+
+            <FormField
+              control={form.control}
+              name="category_image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category Image (49x49)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        form.setValue("category_image", file.name); // Use setValue to store the file
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
