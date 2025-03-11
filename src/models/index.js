@@ -56,6 +56,7 @@ const Channel = mongoose.model('Channel', channelSchema);
 // Category Schema
 const categorySchema = new mongoose.Schema({
   name: String,
+  image: String,
   seo_name: String,
   category_url: String,
   redirectUrls: [String], // Fixed inconsistency

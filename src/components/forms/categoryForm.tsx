@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { API_BASE_URL } from "@/config/api";
+import { uploadImageToImgBB } from "@/lib/utils";
 
 type CategoryFormData = {
   name: string;
@@ -36,8 +37,22 @@ const CategoryForm = () => {
   const form = useForm<CategoryFormData>();
   const [titleCount, setTitleCount] = useState(0);
   const [descriptionCount, setDescriptionCount] = useState(0);
+  const [categoryImage, setCategoryImage] = useState("")
 
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const imageUrl = await uploadImageToImgBB(file);
+    console.log(imageUrl, "team image link");
+
+    if (imageUrl) {
+      setCategoryImage(imageUrl);
+    }
+  };
   const onSubmit = async (data: CategoryFormData) => {
+    const payload = { ...data, image: categoryImage }
     setLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/api/categories`, {
@@ -45,7 +60,7 @@ const CategoryForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -165,10 +180,7 @@ const CategoryForm = () => {
                   <FormControl>
                     <Input
                       type="file"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0] || null;
-                        form.setValue("category_image", file.name); // Use setValue to store the file
-                      }}
+                      onChange={handleFileUpload}
                     />
                   </FormControl>
                   <FormMessage />

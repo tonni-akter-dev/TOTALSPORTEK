@@ -109,9 +109,7 @@ const TeamForm = () => {
     const file = event.target.files[0];
     if (!file) return;
   
-    const imageUrl = await uploadImageToImgBB(file);
-    console.log(imageUrl, "team image link");
-  
+    const imageUrl = await uploadImageToImgBB(file);  
     if (imageUrl) {
       setTeamImage(imageUrl);
       setValue("team_image", imageUrl); // ✅ Update form value dynamically

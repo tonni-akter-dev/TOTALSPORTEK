@@ -15,6 +15,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { API_BASE_URL, API_CONFIG } from "@/config/api";
+import { uploadImageToImgBB } from "@/lib/utils";
 
 type ChannelFormData = {
   name: string;
@@ -40,9 +41,26 @@ const ChannelForm = () => {
   const [titleCount, setTitleCount] = useState(0);
   const [descriptionCount, setDescriptionCount] = useState(0);
   const form = useForm<ChannelFormData>();
+  const [channelImage, setChannelImage] = useState("")
+
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const imageUrl = await uploadImageToImgBB(file);
+    console.log(imageUrl, "team image link");
+
+    if (imageUrl) {
+      setChannelImage(imageUrl);
+    }
+  };
+
 
   const onSubmit = async (data: ChannelFormData) => {
+    const payload = { ...data, image: channelImage }
     setLoading(true);
+
     try {
       const response = await fetch(`${API_BASE_URL}/api/channel`, {
         method: 'POST',
@@ -51,7 +69,7 @@ const ChannelForm = () => {
         },
         ...API_CONFIG,
         credentials: "include",
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) throw new Error('Failed to create channel');
@@ -176,12 +194,8 @@ const ChannelForm = () => {
                   <FormLabel>Channel Image</FormLabel>
                   <FormControl>
                     <Input
-                           type="file"
-                     onChange={(e) => {
-                      const file = e.target.files?.[0] || null;
-                      field.onChange(file.name);
-                      console.log("Selected File Name:", file ? file.name : "No file selected");
-                    }}
+                      type="file"
+                      onChange={handleFileUpload}
                     />
                   </FormControl>
                   <FormMessage />
