@@ -131,9 +131,6 @@ const EventDetails = () => {
                                     </td>
                                     <td>
                                         <Link to={`${events.eventUrl}`}>sdfds</Link>
-                                        {/* <Link to={events.eventUrl}  className="text-black hover:underline">
-                                            Watch
-                                        </Link> */}
                                     </td>
                                 </tr>
                             </tbody>
