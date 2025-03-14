@@ -11,7 +11,7 @@ import { fetchLeagues, fetchTeams } from "@/api/teamsLeagues";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { fetchEvents } from "@/api/events";
 import LiveMatch from "./LiveMatch";
-import { API_BASE_URL, API_CONFIG } from "@/config/api";
+
 interface Match {
   _id: string;
   match: string;
@@ -21,7 +21,6 @@ interface Match {
   submittedBy: string;
   submittedAt: string;
 }
-
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
@@ -39,6 +38,7 @@ const Index = () => {
     };
     fetchData();
   }, []);
+
   console.log(events, "events");
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -122,35 +122,35 @@ const Index = () => {
                 {events.length > 0 ? (
                   <div className="flex flex-col gap-2">
                     {events.map(event => (
-                    <div key={event._id} className={`${theme == 'light' ? 'bg-white' : 'bg-gray-800'}  p-3 rounded-lg flex items-center justify-between mb-2 shadow-md border `}>
-                      {/* Left Side: Live Indicator & Teams */}
-                      <div className="flex items-start gap-10">
-                        {/* Live Now Indicator */}
-                        <div className="border-l-4 border-orange-500 pl-2">
-                          <p className="text-orange-500 text-xs font-semibold">Starts in:  {new Date(event.startDate).toLocaleDateString("en-GB", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })}</p>
-                        </div>
+                      <div key={event._id} className={`${theme == 'light' ? 'bg-white' : 'bg-gray-800'}  p-3 rounded-lg flex items-center justify-between mb-2 shadow-md border `}>
+                        {/* Left Side: Live Indicator & Teams */}
+                        <div className="flex items-start gap-10">
+                          {/* Live Now Indicator */}
+                          <div className="border-l-4 border-orange-500 pl-2">
+                            <p className="text-orange-500 text-xs font-semibold">Starts in:  {new Date(event.startDate).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })}</p>
+                          </div>
 
-                        {/* Teams */}
-                        <div className="flex flex-col gap-1">
-                          {/* Match Name */}
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className={`text-sm font-medium ${theme == 'light' ? 'text-black' : 'text-white'} `}>{event.teamA}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {/* <img src={} alt="" /> */}
-                            <span className={`text-sm ${theme == 'light' ? 'text-black' : 'text-white'}`}>{event.teamA}</span>
+                          {/* Teams */}
+                          <div className="flex flex-col gap-1">
+                            {/* Match Name */}
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className={`text-sm font-medium ${theme == 'light' ? 'text-black' : 'text-white'} `}>{event.teamA}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {/* <img src={} alt="" /> */}
+                              <span className={`text-sm ${theme == 'light' ? 'text-black' : 'text-white'}`}>{event.teamA}</span>
+                            </div>
                           </div>
                         </div>
+                        {/* External Link Icon */}
+                        <a href={`/events/${event._id}`} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink size={16} className={`opacity-75 hover:opacity-100 cursor-pointer ${theme == "dark" ? 'text-white' : "text-black"}`} />                      </a>
                       </div>
-                      {/* External Link Icon */}
-                      <a href={event.eventUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink size={16} className={`opacity-75 hover:opacity-100 cursor-pointer ${theme == "dark" ? 'text-white' : "text-black"}`} />                      </a>
-                    </div>
-                  ))}
+                    ))}
                   </div>
                 ) : (
                   <p className="text-center text-gray-400">No live matches available</p>
@@ -158,18 +158,15 @@ const Index = () => {
               </section>
             </main>
           </div>
-
           {/* // live matches component */}
           <LiveMatch theme={theme} />
-
         </div>
-
         <div className="hidden md:flex w-full">
           <div className="hidden md:block">
             <LeaguesSidebar leagues={leagues} />
           </div>
-
           <main className="flex-1 p-4 min-h-[calc(100vh-64px)]">
+            {/* <LiveNow /> */}
             <section className="mb-12">
               <h2 className="text-2xl font-bold mb-6">Live Matches</h2>
               {events.length > 0 ? (
@@ -200,8 +197,8 @@ const Index = () => {
                         </div>
                       </div>
                       {/* External Link Icon */}
-                      <a href={event.eventUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink size={16} className={`opacity-75 hover:opacity-100 cursor-pointer ${theme == "dark" ? 'text-white' : "text-black"}`} />                      </a>
+                      <a href={`/events/${event._id}`} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink size={16} className={`opacity-75 hover:opacity-100 cursor-pointer ${theme == "dark" ? 'text-white' : "text-black"}`} />                      </a>
                     </div>
                   ))}
                 </div>
@@ -210,7 +207,7 @@ const Index = () => {
               )}
             </section>
             {/* // live matches component */}
-            <LiveMatch  theme={theme}/>
+            <LiveMatch theme={theme} />
           </main>
 
           <div className="hidden md:block">
@@ -218,6 +215,8 @@ const Index = () => {
           </div>
         </div>
       </div>
+
+
       <Footer />
     </div>
   );

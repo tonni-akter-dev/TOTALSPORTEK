@@ -100,6 +100,7 @@ const LiveNow = () => {
       try {
         // Fetch most watched stream
         const mostWatchedRes = await fetch(`${API_BASE_URL}/api/streams/most-watched`);
+        console.log(mostWatchedRes,"mostWatchedRes");
         const mostWatchedData = await mostWatchedRes.json();
         
         // Fetch all live streams

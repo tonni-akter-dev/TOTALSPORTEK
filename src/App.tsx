@@ -11,6 +11,7 @@ import Signup from "./pages/Signup";
 import UserDashboard from "./pages/UserDashboard";
 import { TeamsLeaguesProvider } from './context/TeamsLeaguesContext';
 import { EventsProvider } from '@/context/EventsContext';
+import EventDetails from "./pages/EventDetails";
 
 const App = () => (
   <EventsProvider>
@@ -30,6 +31,7 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/user-dashboard" element={<UserDashboard />} />
               <Route path="/stream/:streamId" element={<StreamDetails />} />
+              <Route path="/events/:eventId" element={<EventDetails />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </BrowserRouter>

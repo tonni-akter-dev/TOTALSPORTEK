@@ -11,6 +11,7 @@ import { User } from './models/index.js';
 import dotenv from 'dotenv';
 import matchRoutes from './routes/matches.js';
 import channelRoutes from './routes/channel.js';
+import streamRoutes from './routes/streams.js';
 import eventRoutes from './routes/events.js'; // Import the new events route
 
 dotenv.config();
@@ -40,6 +41,7 @@ app.use('/api', leagueRoutes);
 app.use('/api', channelRoutes);
 app.use('/api', matchRoutes);
 app.use('/api', eventRoutes);
+app.use('/api/streams', streamRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
