@@ -1,15 +1,10 @@
-const streams = [
-    { channel: "Sky Sports F1 HD", mobile: "Yes", quality: 1500, ads: 3, language: "English" },
-    { channel: "Sky Sports F1 HD", mobile: "Yes", quality: 1500, ads: 3, language: "English" },
-];
 import { Moon, Sun, Menu, X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useTheme } from "next-themes";
 import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
-import { fetchEventsbyId } from "@/api/events";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { API_BASE_URL } from "@/config/api";
 
 const EventDetails = () => {
@@ -35,7 +30,8 @@ const EventDetails = () => {
 
         eventsDetails();
     }, [eventId]);
-    console.log(events, "events details");
+
+    console.log(events.eventUrl, "events details");
 
     return (
         <div>
@@ -134,9 +130,10 @@ const EventDetails = () => {
                                         {events.metaDescription}
                                     </td>
                                     <td>
-                                        <a href={events.eventUrl} target='_blank' className="text-black hover:underline">
+                                        <Link to={`${events.eventUrl}`}>sdfds</Link>
+                                        {/* <Link to={events.eventUrl}  className="text-black hover:underline">
                                             Watch
-                                        </a>
+                                        </Link> */}
                                     </td>
                                 </tr>
                             </tbody>
