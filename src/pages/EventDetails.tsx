@@ -31,11 +31,9 @@ const EventDetails = () => {
         eventsDetails();
     }, [eventId]);
 
-    console.log(events.eventUrl, "events details");
-
     return (
         <div>
-            <header className="border-b sticky top-0 z-50 bg-background">
+            <header className="border-b sticky top-0 z-50 bg-background" >
                 <div className="flex items-center justify-between px-4 py-3 max-w-[2000px] mx-auto">
                     <h1 className="text-xl font-bold text-orange-500">TOTALSPORTEK</h1>
                     <div className="flex items-center gap-2 md:hidden">
@@ -87,7 +85,7 @@ const EventDetails = () => {
                     </nav>
                 </div>
             </header>
-            <div className={`${theme == "dark" ? 'bg-black' : "bg-white"}  flex justify-center p-4`}>
+            <div className={`${theme == "dark" ? 'bg-black' : "bg-white"}  mt-20 mb-40 flex justify-center p-4`}>
                 <div className={` ${theme == "dark" ? 'bg-gray-900 text-white' : "text-black bg-white"}  w-full max-w-4xl rounded-lg shadow-lg overflow-hidden`}>
                     <div className={`${theme == "dark" ? 'bg-gray-700 text-white' : "text-black bg-gray-100"}  flex justify-between items-center p-4`}>
                         <div className="flex gap-2 items-center">
