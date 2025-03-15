@@ -30,11 +30,12 @@ const LiveMatch = ({ theme }) => {
     // Filter approved matches
     const approvedMatches = matches.filter((match) => match.status === "approved");
     console.log(matches);
+
+
+
     return (
         <div className={` ${theme === 'dark' ? "bg-gray-900" : 'bg-gray-300'} text-white p-4 rounded-lg`}>
             {/* Header */}
-
-
             {/* Matches List */}
             {approvedMatches.length > 0 ? (
                 approvedMatches.map((match) => (
@@ -60,7 +61,7 @@ const LiveMatch = ({ theme }) => {
                         </div>
 
                         {/* External Link Icon */}
-                        <a href={match._id} target="_blank" rel="noopener noreferrer">
+                        <a href={`/match/${match._id}`} target="_blank" rel="noopener noreferrer">
                             <ExternalLink size={16} className={`opacity-75 hover:opacity-100 cursor-pointer ${theme == "dark" ? 'text-white' : "text-black"}`} />
                         </a>
                     </div>

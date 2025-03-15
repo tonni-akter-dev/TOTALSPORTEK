@@ -7,29 +7,30 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { API_BASE_URL } from "@/config/api";
 
-const EventDetails = () => {
+const MatchDetails = () => {
     const { theme, setTheme } = useTheme();
     const [events, setEvents] = useState({})
-    const { eventId } = useParams();
+    const { matchId } = useParams();
 
     useEffect(() => {
-        const eventsDetails = async () => {
+        const matchDetails = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/events/${eventId}`, {
+                const response = await fetch(`${API_BASE_URL}/api/match/${matchId}`, {
                     method: 'GET'
                 });
                 if (!response.ok) {
-                    throw new Error('Failed to fetch event details');
+                    throw new Error('Failed to fetch match details');
                 }
                 const data = await response.json();
                 setEvents(data);
             } catch (error) {
-                console.error('Error fetching event details:', error);
+                console.error('Error fetching match details:', error);
             }
         };
 
-        eventsDetails();
-    }, [eventId]);
+        matchDetails();
+    }, [matchId]);
+
     console.log(events);
 
     return (
@@ -89,22 +90,15 @@ const EventDetails = () => {
             <div className={`${theme == "dark" ? 'bg-black' : "bg-white"}  mt-20 mb-40 flex justify-center p-4`}>
                 <div className={` ${theme == "dark" ? 'bg-gray-900 text-white' : "text-black bg-white"}  w-full max-w-4xl rounded-lg shadow-lg overflow-hidden`}>
                     <div className={`${theme == "dark" ? 'bg-gray-700 text-white' : "text-black bg-gray-100"}  flex justify-between items-center p-4`}>
-                        <div className="flex gap-2 items-center">
-                            <p>{events.teamA}</p>
-                        </div>
                         <h2 className="text-lg font-semibold">Live Now!</h2>
-                        <div className="flex gap-2 items-center">
-                            <p>{events.teamB}</p>
-                        </div>
                     </div>
                     <div className="p-4">
                         <table className="w-full text-left border-separate border-spacing-y-2">
                             <thead>
                                 <tr className={`  ${theme == "dark" ? 'text-gray-300' : "text-gray-700"} `}>
-                                    <th>League</th>
-                                    <th>Channel</th>
+                                    <th>Match</th>
                                     <th>Start Date</th>
-                                    <th>Description</th>
+                                    <th>Submitted By</th>
                                     <th>Link</th>
                                 </tr>
                             </thead>
@@ -112,21 +106,20 @@ const EventDetails = () => {
                                 <tr className={`${theme == "dark" ? 'bg-gray-800 text-gray-300' :
                                     "text-gray-700 "}   text-sm`}>
                                     <td>
-                                        {events.league}
+                                        {events.match}
                                     </td>
-                                    <td>{events.channels}</td>
                                     <td>
-                                        {new Date(events.startDate).toLocaleDateString("en-GB", {
+                                        {new Date(events.submittedAt).toLocaleDateString("en-GB", {
                                             day: "2-digit",
                                             month: "short",
                                             year: "numeric",
                                         })}
                                     </td>
                                     <td>
-                                        {events.metaDescription}
+                                        {events.submittedBy}
                                     </td>
                                     <td>
-                                        <Link to={`${events.eventUrl}`}>Watch Now</Link>
+                                        <Link to={`${events.link}`} target="_blank" rel="noopener noreferrer">Watch Now</Link>
                                     </td>
                                 </tr>
                             </tbody>
@@ -140,4 +133,4 @@ const EventDetails = () => {
     )
 }
 
-export default EventDetails
+export default MatchDetails

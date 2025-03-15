@@ -65,5 +65,17 @@ router.delete('/matches/:id', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/match/:matchId', async (req, res) => {
+  try {
+    const match = await Match.findById(req.params.matchId);
 
-export default router; 
+    if (!match) {
+      return res.status(404).json({ message: 'match not found' });
+    }
+    res.json(match);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+export default router;
